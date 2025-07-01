@@ -1,0 +1,309 @@
+
+name: hackathon-Gr12
+
+on: 
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: lint terraform files
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.47.0
+      - name: check terraform file 
+        run: |
+          tflint --format=json --chdir=EKS-Terraform > tflint-report.json || true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: terraform fmt
+        run: |
+           terraform fmt -check -diff -recursive EKS-Terraform > fmt-report1.txt
+           if [ ! -s fmt-report1.txt ]; then
+           echo "Aucun problème de format détecté dans les fichiers Terraform." > fmt-report.txt
+           fi
+
+
+      - name: terraform validate
+        run: |
+          terraform init EKS-Terraform --backend=false > init-report.txt || true
+          terraform validate > validate-report.txt || true
+
+      - name: install checkov
+        run: pip install checkov
+
+      - name: run checkov on terraform
+        run: checkov -d EKS-Terraform -o json > checkov-report.json || true
+
+
+      - name: install kube-linter
+        run: |
+            curl -sSL -o kube-linter.tar.gz https://github.com/stackrox/kube-linter/releases/download/v0.6.6/kube-linter-linux.tar.gz
+            tar -xzf kube-linter.tar.gz
+            chmod +x kube-linter
+            sudo mv kube-linter /usr/local/bin/kube-linter
+
+      - name: Check kube-linter version
+        run: kube-linter version
+
+      - name: lint kubernetes manifests
+        run: kube-linter lint ./manifests > kube-lint-report.txt || true
+
+      - name: Debug:list reports
+        run: ls -lh *.txt *.json || true
+
+
+      - name: Upload lint artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: |
+            tflint-report.json
+            fmt-report1.txt
+            validate-report.txt
+            kube-lint-report.txt 
+            checkov-report.json 
+
+  sast:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4 
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        with:
+          args: >-
+            -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
+            -Dsonar.projectName=${{ vars.SONAR_PROJECT_NAME }}
+            -Dsonar.projectVersion=${{ github.sha }}
+          
+  tests:
+     runs-on: ubuntu-latest 
+     needs: sast
+
+     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependancies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libjpeg-dev zlib1g-dev build-essential python3-dev
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Test my app
+        run: |
+         pytest
+         python manage.py test
+
+
+  sca_dependancies:
+    runs-on: ubuntu-latest
+    needs: tests
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download HTML template
+        run: |
+          curl -o html.tpl https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl
+
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/Trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: .
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
+          format: template
+          template: "@html.tpl"
+          output: 'trivy-fs-report.html'
+          exit-code: 0
+      - name: Upload Trivy vulnerability report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-fs-report
+          path: trivy-fs-report.html
+
+  
+  build_and_sca_image:
+    runs-on: ubuntu-latest
+    needs: sca_dependancies
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Docker 
+        run: | 
+          chmod +x scripts/docker_install.sh
+          ./scripts/docker_install.sh
+
+      - name: Download HTML template
+        run: |
+          curl -o html.tpl https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl
+
+
+      - name: Build Docker Image
+        run: | 
+          docker build -t pygoat:latest .
+          docker run -d --rm --name pygoat -p 8000:8000 pygoat:latest
+          sleep 10
+          docker logs pygoat
+          docker stop pygoat
+
+      - name: Scan Docker Image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: pygoat:latest
+          severity: HIGH,CRITICAL
+          format: template
+          template: "@html.tpl"
+          ignore-unfixed: true
+          output: 'trivy-image-report.html'
+          exit-code: 0
+      - name: Upload Trivy image report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-image-report
+          path: trivy-image-report.html
+      
+      - name: login to docker hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: push to docker hub
+        if: success()
+        run: | 
+          docker tag pygoat:latest ${{ secrets.DOCKER_USERNAME }}/pygoat:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/pygoat:latest
+
+  deploy_on_k8s:
+     runs-on: ubuntu-latest
+     needs: build_and_sca_image
+
+     steps:
+       - uses: actions/checkout@v4
+
+    
+       - name: Upload manifests via SCP
+         uses: appleboy/scp-action@master
+         with:
+           host: ${{ secrets.HOST }}
+           username: ${{ secrets.USERNAME_HOST }}
+           key: ${{ secrets.SSH_KEY }}
+           port: ${{ secrets.PORT }}
+           source: "manifests/app-deploy.yaml,manifests/app-svc.yaml"
+           target: "/home/ubuntu/manifests"
+
+    
+       - name: Apply manifests via SSH
+         uses: appleboy/ssh-action@master
+         with:
+           host: ${{ secrets.HOST }}
+           username: ${{ secrets.USERNAME_HOST }}
+           key: ${{ secrets.SSH_KEY }}
+           port: ${{ secrets.PORT }}
+           script: |
+             kubectl delete deployment pygoat-deployment || true
+             kubectl delete service pygoat-service || true
+             cd /home/ubuntu/manifests/manifests
+             kubectl apply -f app-deploy.yaml
+             kubectl apply -f app-svc.yaml
+             sleep 10
+             kubectl get pods -o wide
+             kubectl get svc
+
+  dast:
+        needs: deploy_on_k8s
+        runs-on: ubuntu-latest
+        
+        steps:
+          - name: checkout code
+            uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
+
+          - name: Run Zap Scan
+            uses: appleboy/ssh-action@master
+            with:
+              host: ${{ secrets.HOST }}
+              username: ${{ secrets.USERNAME_HOST }}
+              key: ${{ secrets.SSH_KEY }}
+              port: ${{ secrets.PORT }}
+              script: |
+                mkdir -p /home/ubuntu/zap
+                cd /home/ubuntu/zap 
+                docker network create zapnet || true
+                docker run --rm --network zapnet -v $(pwd):/zap/wrk ghcr.io/zaproxy/zaproxy:weekly /zap/zap-baseline.py -t ${{ secrets.TARGET_URL }} -r zap-report.html || true
+                docker network rm zapnet || true
+                while [ ! -f /home/ubuntu/zap/zap-report.html ]; do sleep 1; done
+                tar -czf /home/ubuntu/zap/zap-report.tar.gz zap-report.html
+                ls -la /home/ubuntu/zap/ 
+
+
+          - name: Create the SSH key file (key.pem)
+            run: |
+              echo "${{ secrets.SSH_KEY }}" > key.pem
+              chmod 600 key.pem
+
+
+
+          - name: Download ZAP report archive via SCP
+            run: |
+             scp -o StrictHostKeyChecking=no -i key.pem -P ${{ secrets.PORT }} \
+               ${{ secrets.USERNAME_HOST }}@${{ secrets.HOST }}:/home/ubuntu/zap/zap-report.tar.gz .
+
+          - name: Verify the downloaded file
+            run: |
+              ls -la
+              file zap-report.tar.gz
+              tar -tzf zap-report.tar.gz
+
+          - name: Extract the ZAP report
+            run: tar -xzf zap-report.tar.gz
+
+          - name: Upload Zap artifact
+            uses: actions/upload-artifact@v4
+            with:
+              name: Zap-report
+              path: zap-report.html
+
+          - name: Delete the temporary key
+            run: rm -f key.pem
+
+
+
+                  
+          
+
+                 
+              
+
+
+
+  
+
