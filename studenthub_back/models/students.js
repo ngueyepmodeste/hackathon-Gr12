@@ -17,9 +17,11 @@ const studentSchema = new mongoose.Schema({
     },
     avatar_url: String,
     email: { type: String, required: true, unique: true },
-    school: { type: String, required: true },
+    school: { type: String, required: true, default: 'ESTIAM' },
     major: { type: String, required: true },
     major_year: { type: String, required: true },
+    phone: String,
+    bio: String,
     password: { type: String, required: true, minlength: 8 },
 }, { timestamps: true });
 

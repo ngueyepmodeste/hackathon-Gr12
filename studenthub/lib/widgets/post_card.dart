@@ -72,7 +72,7 @@ class PostCard extends StatelessWidget {
                       builder: (context) => CommentsBottomSheet(
                         comments: [
                           Comment(
-                            name: 'Emily Johnson',
+                            name: 'Thibaut Kouame',
                             avatarUrl: 'https://randomuser.me/api/portraits/women/5.jpg',
                             timeAgo: '1 hour ago',
                             text: 'Great initiative! The data on renewable energy implementation is particularly interesting.',
@@ -82,6 +82,24 @@ class PostCard extends StatelessWidget {
                             avatarUrl: 'https://randomuser.me/api/portraits/men/6.jpg',
                             timeAgo: '45 minutes ago',
                             text: 'Would love to help implement some of these recommendations. When can we start?',
+                          ),
+                          Comment(
+                            name: 'Professor Roberts',
+                            avatarUrl: 'https://randomuser.me/api/portraits/men/7.jpg',
+                            timeAgo: '30 minutes ago',
+                            text: 'Excellent research work, Sarah! Looking forward to discussing this further in our next department meeting.',
+                          ),
+                          Comment(
+                            name: 'Professor Roberts',
+                            avatarUrl: 'https://randomuser.me/api/portraits/men/7.jpg',
+                            timeAgo: '30 minutes ago',
+                            text: 'Excellent research work, Sarah! Looking forward to discussing this further in our next department meeting.',
+                          ),
+                          Comment(
+                            name: 'Professor Roberts',
+                            avatarUrl: 'https://randomuser.me/api/portraits/men/7.jpg',
+                            timeAgo: '30 minutes ago',
+                            text: 'Excellent research work, Sarah! Looking forward to discussing this further in our next department meeting.',
                           ),
                           Comment(
                             name: 'Professor Roberts',

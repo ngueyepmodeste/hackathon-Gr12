@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:studenthub/view_model/profile_view_model.dart';
 import 'package:studenthub/views/home_screen.dart';
+import 'package:studenthub/views/login_screen.dart';
+import 'package:studenthub/views/register_screen.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
-      ],
-      child: const MainApp(),
-    ),
-  );
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -21,7 +14,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      // home: Scaffold(
+      //   body: Center(
+      //     child: Text('Hello World!'),
+      //   ),
+      // ),
+      // home: HomeScreen(),
+
+      // home: RegisterScreen(),
+      home: LoginScreen(),
     );
   }
 }

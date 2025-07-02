@@ -26,7 +26,11 @@ class RegisterScreen extends StatelessWidget {
                   children: [
                     Text(
                       AppTexts.appName,
-                      style: GoogleFonts.pacifico(fontSize: 40, fontWeight: FontWeight.bold, color: AppColors.primary),
+                      style: GoogleFonts.pacifico(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
                     ),
                     SizedBox(height: 32),
                     Row(
@@ -47,9 +51,177 @@ class RegisterScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 16),
-                    AppInput(
-                      hintText: "Email",
-                      onChanged: model.setEmail,
+                    AppInput(hintText: "Email", onChanged: model.setEmail),
+                    SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        hintText: "Filières",
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: AppColors.inputBorder,
+                            width: 1,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: AppColors.inputBorder,
+                            width: 1,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: AppColors.secondary,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      value: model.field.isEmpty ? null : model.field,
+                      items: [
+                        DropdownMenuItem(
+                          value: "Informatique",
+                          child: Text(
+                            "Informatique",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "Marketing",
+                          child: Text(
+                            "Marketing",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "Finance",
+                          child: Text(
+                            "Finance",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "RH",
+                          child: Text(
+                            "RH",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) => model.setField(value ?? ""),
+                      dropdownColor: Colors.white,
+                      menuMaxHeight: 200,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        hintText: "Niveau",
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: AppColors.inputBorder,
+                            width: 1,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: AppColors.inputBorder,
+                            width: 1,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: AppColors.secondary,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      value: model.level.isEmpty ? null : model.level,
+                      items: [
+                        DropdownMenuItem(
+                          value: "B1",
+                          child: Text(
+                            "B1",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "B2",
+                          child: Text(
+                            "B2",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "B3",
+                          child: Text(
+                            "B3",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "M1",
+                          child: Text(
+                            "M1",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: "M2",
+                          child: Text(
+                            "M2",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) => model.setLevel(value ?? ""),
+                      dropdownColor: Colors.white,
+                      menuMaxHeight: 200,
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     SizedBox(height: 16),
                     AppInput(
@@ -67,7 +239,10 @@ class RegisterScreen extends StatelessWidget {
                     SizedBox(height: 16),
                     _TermsCheckbox(),
                     if (model.errorMessage != null)
-                      Text(model.errorMessage!, style: TextStyle(color: Colors.red)),
+                      Text(
+                        model.errorMessage!,
+                        style: TextStyle(color: Colors.red),
+                      ),
                     SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
@@ -81,17 +256,40 @@ class RegisterScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                          Text(AppTexts.alreadyHaveAccount, style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black)),
+                        Text(
+                          AppTexts.alreadyHaveAccount,
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black,
+                          ),
+                        ),
                         GestureDetector(
                           onTap: () {
                             // Naviguer vers la page de connexion
                           },
-                          child: Text("Se connecter", style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary, decoration: TextDecoration.underline, decorationColor: AppColors.primary)),
+                          child: Text(
+                            "Se connecter",
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.primary,
+                            ),
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(height: 16),
-                    Text("ou", style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black)),
+                    Text(
+                      "ou",
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black,
+                      ),
+                    ),
                     SizedBox(height: 16),
                     ConnexionAvecEstiam(),
                     SizedBox(height: 16),
@@ -139,21 +337,39 @@ class _TermsCheckboxState extends State<_TermsCheckbox> {
             });
           },
           activeColor: AppColors.primary,
-          
+
           side: BorderSide(color: AppColors.primary, width: 1.5),
         ),
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black),
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                color: Colors.black,
+              ),
               children: [
-                TextSpan(text: 'En vous inscrivant, vous acceptez les ', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.black) ),
+                TextSpan(
+                  text: 'En vous inscrivant, vous acceptez les ',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                  ),
+                ),
                 TextSpan(
                   text: 'conditions d\'utilisation',
-                  style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary, decoration: TextDecoration.underline),
-                  recognizer: TapGestureRecognizer()..onTap = () {
-                    // Open Terms of Service
-                  },
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    decoration: TextDecoration.underline,
+                  ),
+                  recognizer:
+                      TapGestureRecognizer()
+                        ..onTap = () {
+                          // Open Terms of Service
+                        },
                 ),
                 // TextSpan(text: ' and '),
                 // TextSpan(
@@ -181,8 +397,13 @@ class ConnexionAvecEstiam extends StatelessWidget {
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          side: BorderSide(color: const Color.fromARGB(255, 255, 255, 255), width: 1.5),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          side: BorderSide(
+            color: const Color.fromARGB(255, 255, 255, 255),
+            width: 1.5,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
 
           backgroundColor: AppColors.secondary,
         ),
@@ -200,11 +421,15 @@ class ConnexionAvecEstiam extends StatelessWidget {
             SizedBox(width: 12),
             Text(
               'Se connecter avec Estiam',
-              style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary),
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
             ),
           ],
         ),
       ),
     );
   }
-} 
+}
