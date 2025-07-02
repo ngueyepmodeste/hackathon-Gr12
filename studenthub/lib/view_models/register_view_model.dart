@@ -4,6 +4,9 @@ class RegisterViewModel extends ChangeNotifier {
   String firstname = '';
   String lastname = '';
   String email = '';
+  String field = '';
+  String level = '';
+  String promotion = '';
   String password = '';
   String confirmPassword = '';
   bool isLoading = false;
@@ -21,6 +24,21 @@ class RegisterViewModel extends ChangeNotifier {
 
   void setEmail(String value) {
     email = value;
+    notifyListeners();
+  }
+
+  void setField(String value) {
+    field = value;
+    notifyListeners();
+  }
+
+  void setLevel(String value) {
+    level = value;
+    notifyListeners();
+  }
+
+  void setPromotion(String value) {
+    promotion = value;
     notifyListeners();
   }
 

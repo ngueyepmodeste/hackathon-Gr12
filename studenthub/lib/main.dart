@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studenthub/views/home_screen.dart';
+import 'package:studenthub/views/register_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -17,7 +18,9 @@ class MainApp extends StatelessWidget {
       //     child: Text('Hello World!'),
       //   ),
       // ),
-      home: HomeScreen(),
+      // home: HomeScreen(),
+      home: RegisterScreen(),
+
     );
   }
 }
