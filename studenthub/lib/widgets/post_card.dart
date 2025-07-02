@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../models/post.dart';
+import 'components/comments_bottom_sheet.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -29,12 +31,22 @@ class PostCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(post.user.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(_timeAgo(post.timestamp), style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                      Text(
+                        post.user.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        _timeAgo(post.timestamp),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      ),
                     ],
                   ),
                 ),
-                Icon(Icons.more_horiz, color: Colors.grey[600]),
+                Icon(
+                  LucideIcons.moreHorizontal,
+                  color: Colors.grey[600],
+                  size: 18,
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -50,9 +62,40 @@ class PostCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _iconText(Icons.favorite_border, post.likes.toString()),
-                _iconText(Icons.mode_comment_outlined, post.comments.toString()),
-                _iconText(Icons.share_outlined, post.shares.toString()),
+                _iconText(LucideIcons.heart, post.likes.toString()),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => CommentsBottomSheet(
+                        comments: [
+                          Comment(
+                            name: 'Emily Johnson',
+                            avatarUrl: 'https://randomuser.me/api/portraits/women/5.jpg',
+                            timeAgo: '1 hour ago',
+                            text: 'Great initiative! The data on renewable energy implementation is particularly interesting.',
+                          ),
+                          Comment(
+                            name: 'Michael Chang',
+                            avatarUrl: 'https://randomuser.me/api/portraits/men/6.jpg',
+                            timeAgo: '45 minutes ago',
+                            text: 'Would love to help implement some of these recommendations. When can we start?',
+                          ),
+                          Comment(
+                            name: 'Professor Roberts',
+                            avatarUrl: 'https://randomuser.me/api/portraits/men/7.jpg',
+                            timeAgo: '30 minutes ago',
+                            text: 'Excellent research work, Sarah! Looking forward to discussing this further in our next department meeting.',
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: _iconText(LucideIcons.messageCircle, post.comments.toString()),
+                ),
+                _iconText(LucideIcons.share, post.shares.toString()),
               ],
             ),
           ],
@@ -77,4 +120,4 @@ class PostCard extends StatelessWidget {
     if (diff.inHours < 24) return '${diff.inHours} hours ago';
     return '${diff.inDays} days ago';
   }
-} 
+}
