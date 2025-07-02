@@ -60,6 +60,6 @@ app.post('/api/students/log-in', (req, res) => {
         .catch(err => res.status(500).json({ message: err.message }));
 });
  
-app.listen(PORT, () => {
-    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Serveur démarré sur http://0.0.0.0:${PORT}`);
 });
