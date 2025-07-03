@@ -1,0 +1,28 @@
+import 'package:flutter/material.dart';
+import 'package:studenthub/views/home_screen.dart';
+import 'package:studenthub/views/login_screen.dart';
+import 'package:studenthub/views/register_screen.dart';
+
+void main() {
+  runApp(const MainApp());
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      // home: Scaffold(
+      //   body: Center(
+      //     child: Text('Hello World!'),
+      //   ),
+      // ),
+      // home: HomeScreen(),
+
+      // home: RegisterScreen(),
+      home: LoginScreen(),
+    );
+  }
+}
