@@ -24,6 +24,15 @@ const demandeSchema = new mongoose.Schema({
         type: String,
         enum: ['available', 'pending', 'accepted', 'rejected'],
         default: 'available'
+    },
+    demande_ref: {
+        type: String,
+        default: function() {
+            const randomLetters = Array.from({length: 5}, () => 
+                String.fromCharCode(65 + Math.floor(Math.random() * 26))
+            ).join('');
+            return `dmd_${randomLetters}`;
+        }
     }
 }, { timestamps: true });
 
