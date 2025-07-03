@@ -189,6 +189,6 @@ app.put('/api/admin/demandes/:demandeId/status', async (req, res) => {
 
 
 // lancer le serveur
-app.listen(PORT, () => {
-    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Serveur démarré sur http://0.0.0.0:${PORT}`);
 });
