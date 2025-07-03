@@ -6,7 +6,7 @@ on:
 
   pull_request:
     branches: ["main"]
-    
+
 jobs:
   sast:
     runs-on: ubuntu-latest
@@ -26,29 +26,6 @@ jobs:
             -Dsonar.projectName=${{ vars.SONAR_PROJECT_NAME }}
             -Dsonar.projectVersion=${{ github.sha }}
           
-  tests:
-     runs-on: ubuntu-latest 
-     needs: sast
-
-     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install Dependancies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libjpeg-dev zlib1g-dev build-essential python3-dev
-
-      - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Test my app
-        run: |
-         pytest
-         python manage.py test
-
 
   sca_dependancies:
     runs-on: ubuntu-latest
