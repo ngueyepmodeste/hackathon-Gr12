@@ -29,7 +29,7 @@ jobs:
 
   sca_dependancies:
     runs-on: ubuntu-latest
-    needs: tests
+    needs: sast
 
     steps:
       - uses: actions/checkout@v4
