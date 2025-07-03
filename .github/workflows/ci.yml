@@ -3,10 +3,11 @@ name: hackathon-Gr12
 
 on: 
   workflow_dispatch:
-  
+
   pull_request:
     branches: ["main"]
-
+    
+jobs:
   sast:
     runs-on: ubuntu-latest
     steps:
