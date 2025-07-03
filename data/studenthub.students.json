@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "6864ebd10f472f0f22f2cebb"
+  },
+  "f_name": "kouame",
+  "l_name": "bosson basssdout thibaut",
+  "email": "kouame@gmail.com",
+  "school": "Business",
+  "major": "Marketing",
+  "major_year": "3",
+  "password": "$2b$10$hf.Nqvf67FtJpMU9lzBKLudeVerbIbWGTZIRjAQGVI3rWFBgixQGa",
+  "username": "thibaut9468",
+  "createdAt": {
+    "$date": "2025-07-02T08:20:33.386Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-02T08:20:33.386Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6864eec5c83284bcf63499f6"
+  },
+  "f_name": "kouame",
+  "l_name": "bosson basssdout thibaut",
+  "email": "kouamse@gmail.com",
+  "school": "ESTIAM",
+  "major": "BDAI",
+  "major_year": "4",
+  "password": "$2b$10$8Q0x.0L3O9m1SUYqZlqvQe/Jq1H7rShNsGIPsQXGMzL1IUC5pPIHm",
+  "username": "thibaut8597",
+  "createdAt": {
+    "$date": "2025-07-02T08:33:09.966Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-02T08:33:09.966Z"
+  },
+  "__v": 0
+}]

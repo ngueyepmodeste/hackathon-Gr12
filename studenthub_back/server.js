@@ -277,6 +277,6 @@ app.get('/api/bibiotheque/all', async (req, res) => {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // lancer le serveur
-app.listen(PORT, () => {
-    console.log(`Serveur démarré sur http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Serveur démarré sur http://0.0.0.0:${PORT}`);
 });

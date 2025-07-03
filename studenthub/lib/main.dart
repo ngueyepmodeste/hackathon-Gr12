@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studenthub/views/home_screen.dart';
+import 'package:studenthub/views/login_screen.dart';
 import 'package:studenthub/views/register_screen.dart';
 
 void main() {
@@ -19,8 +20,9 @@ class MainApp extends StatelessWidget {
       //   ),
       // ),
       // home: HomeScreen(),
-      home: RegisterScreen(),
 
+      // home: RegisterScreen(),
+      home: LoginScreen(),
     );
   }
 }

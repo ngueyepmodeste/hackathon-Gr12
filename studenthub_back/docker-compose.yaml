@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "80:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/studenthub
+      - PORT=3000
+    depends_on:
+      - mongo
+    restart: always
+
+  mongo:
+    image: mongo:5
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
+volumes:
+  mongo_data:
